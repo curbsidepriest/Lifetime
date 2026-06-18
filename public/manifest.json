@@ -1,0 +1,12 @@
+{
+  "name": "Lifetime",
+  "short_name": "Lifetime",
+  "description": "Your life, planned.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f9fafb",
+  "theme_color": "#111827",
+  "icons": [
+    { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}

@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Lifetime</title>
+<style>
+  :root {
+    /* Editorial, grounding palette — slate, sage, amber. No techy gradients. */
+    --paper:#f5f3ec;        /* warm bone */
+    --ink:#14181d;          /* deep slate, near-black */
+    --text:#2b2c28;         /* warm charcoal */
+    --muted:#6f6e64;
+    --dim:#9c9888;
+    --line:#e4ded1;
+    --build:#3b4654;        /* Build — deep slate (deep work) */
+    --rest:#6f8f74;         /* Rest — sage (recovery) */
+    --amber:#b9883f;        /* away / the present moment */
+    --super:#897fa3;        /* superposition — dusty violet */
+    --cta:linear-gradient(135deg,#c5934f 0%,#a8742c 100%);
+    --serif:'Iowan Old Style','Palatino Linotype',Palatino,Georgia,'Times New Roman',serif;
+    --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html { scroll-behavior:smooth; }
+  body { font-family:var(--sans); color:var(--text); background:var(--paper); -webkit-font-smoothing:antialiased; line-height:1.5; }
+
+  section { padding:14vh 24px; display:flex; flex-direction:column; align-items:center; text-align:center; }
+  .wrap { width:100%; max-width:1060px; display:flex; flex-direction:column; align-items:center; }
+  .kicker { font-size:11px; font-weight:800; letter-spacing:.3em; text-transform:uppercase; color:var(--dim); margin-bottom:20px; }
+  .kicker b { color:var(--muted); font-weight:800; }
+  h1,h2 { font-family:var(--serif); font-weight:500; letter-spacing:-.012em; line-height:1.07; }
+  h1 { font-size:clamp(42px,7.4vw,84px); }
+  h2 { font-size:clamp(30px,5vw,54px); color:var(--text); }
+  .sub { font-size:clamp(15px,1.9vw,19px); color:var(--muted); margin-top:22px; max-width:48ch; line-height:1.6; }
+
+  .dark { background:radial-gradient(125% 90% at 50% 0%, #232c34 0%, var(--ink) 58%); color:#ece8dd; min-height:100vh; justify-content:center; position:relative; }
+  .dark h1 { color:#f4f1e8; }
+  .dark .kicker { color:#8b8674; }
+  .dark .sub { color:#b3ac9b; }
+
+  .reveal { opacity:0; transform:translateY(28px); transition:opacity 1.05s cubic-bezier(.2,.7,.2,1), transform 1.05s cubic-bezier(.2,.7,.2,1); }
+  .reveal.in { opacity:1; transform:none; }
+
+  /* ── life in weeks — an imposing tapestry ── */
+  .weeks { display:grid; grid-template-columns:repeat(52, 8px); gap:2px; margin:14px auto 0; }
+  .wk { width:8px; height:8px; border-radius:1.5px; background:rgba(230,226,214,.07); }
+  .wk.lived { background:rgba(230,226,214,.24); }
+  .wk.now { background:var(--amber); box-shadow:0 0 9px 1px rgba(185,136,63,.95); animation:beat 3.6s ease-in-out infinite; }
+  @keyframes beat { 0%,100%{ box-shadow:0 0 7px 1px rgba(185,136,63,.7);} 50%{ box-shadow:0 0 16px 4px rgba(185,136,63,1);} }
+  .legend { display:flex; gap:24px; margin-top:38px; font-size:12px; color:#b3ac9b; }
+  .legend i { display:inline-block; width:9px; height:9px; border-radius:2px; margin-right:8px; vertical-align:middle; }
+  .scrollcue { position:absolute; bottom:30px; left:50%; transform:translateX(-50%); font-size:11px; letter-spacing:.24em; color:#6a6655; text-transform:uppercase; animation:bob 2.4s ease-in-out infinite; }
+  @keyframes bob { 0%,100%{ transform:translate(-50%,0);} 50%{ transform:translate(-50%,6px);} }
+
+  /* ── app mock: seasons + year ── */
+  .appmock { display:flex; margin-top:52px; border:1px solid var(--line); border-radius:18px; overflow:hidden; box-shadow:0 34px 80px -36px rgba(20,24,29,.4); background:#fff; max-width:100%; }
+  .budgets { background:var(--ink); color:#ece8dd; padding:22px 19px; width:226px; text-align:left; flex-shrink:0; }
+  .budgets .by { font-size:10px; font-weight:800; letter-spacing:.22em; color:#7c7766; text-transform:uppercase; }
+  .budgets .yr { font-size:15px; font-weight:700; color:#f4f1e8; margin:6px 0 1px; font-family:var(--serif); }
+  .budgets .anchyr { font-size:11px; color:#7c7766; margin-bottom:18px; }
+  .stat { margin-bottom:15px; }
+  .stat .row { display:flex; align-items:baseline; justify-content:space-between; gap:8px; }
+  .stat .lbl { font-size:10.5px; color:#b3ac9b; display:flex; align-items:center; gap:5px; }
+  .stat .lbl .dot { width:7px; height:7px; border-radius:50%; flex-shrink:0; }
+  .stat .val { font-size:13px; font-weight:700; color:#f4f1e8; white-space:nowrap; }
+  .stat .val small { font-size:10px; color:#7c7766; font-weight:500; }
+  .stat .val .ok { color:#9ec3a3; }
+  .bar { height:3px; border-radius:999px; background:#2c333c; margin:6px 0 3px; overflow:hidden; }
+  .bar i { display:block; height:100%; border-radius:999px; }
+  .stat .left { font-size:10px; color:#8b8674; }
+  .divline { height:1px; background:#262d35; margin:18px 0; }
+  .yearpane { padding:20px; background:#fff; }
+
+  /* macro seasons strip — the Canopy, aligned above the months */
+  .seasons { display:grid; grid-template-columns:repeat(12,1fr); gap:8px; margin-bottom:11px; }
+  .sbar { height:21px; border-radius:6px; display:flex; align-items:center; gap:5px; padding:0 7px; font-size:9.5px; font-weight:800; white-space:nowrap; overflow:hidden; }
+  .sbar em { font-style:normal; margin-left:auto; font-size:8.5px; opacity:.9; font-weight:700; }
+  .sbar.realized { color:#fff; background:linear-gradient(135deg,#3b4654,#58697a); box-shadow:0 0 0 1px rgba(59,70,84,.5), 0 0 13px rgba(59,70,84,.45); }
+  .sbar.incomplete { color:#6b6580; background:rgba(137,127,163,.13); border:1.5px dashed rgba(137,127,163,.8); }
+
+  .year { display:grid; grid-template-columns:repeat(12, 1fr); gap:8px; }
+  .col { display:flex; flex-direction:column; align-items:center; gap:2px; }
+  .mname { font-size:9px; font-weight:800; color:var(--dim); letter-spacing:.06em; text-align:center; margin-bottom:3px; }
+  .d { width:13px; height:13px; border-radius:2px; border:1px solid #efece3; background:#fff; }
+  .d.wknd { background:#f1eee5; }
+  .d.rest   { background:rgba(111,143,116,.5); border-color:transparent; }
+  .d.build  { background:rgba(59,70,84,.42); border-color:transparent; }
+  .d.away   { background:rgba(185,136,63,.5); border-color:transparent; }
+  .d.superposition {
+    border:1px dashed rgba(137,127,163,.85);
+    background:linear-gradient(135deg, rgba(137,127,163,.2), rgba(137,127,163,.04));
+    animation:superpulse 2.8s ease-in-out infinite;
+  }
+  @keyframes superpulse { 0%,100%{ border-color:rgba(137,127,163,.4);} 50%{ border-color:rgba(137,127,163,.95);} }
+  .d.gem { display:flex; align-items:center; justify-content:center; color:#fff; font-size:9px; border-color:transparent; }
+  .d.gem.build { background:linear-gradient(135deg,rgba(59,70,84,.98),rgba(59,70,84,.62)); box-shadow:0 0 8px rgba(59,70,84,.7); }
+  .d.gem.rest  { background:linear-gradient(135deg,rgba(111,143,116,.98),rgba(111,143,116,.6)); box-shadow:0 0 8px rgba(111,143,116,.75); }
+  .d.gem span { text-shadow:0 0 5px rgba(255,255,255,.95); }
+  /* recovery row — a Rest gem, or a gentle nudge where a month has none */
+  .recov { margin-top:6px; padding-top:5px; border-top:1px solid #efece3; width:13px; display:flex; align-items:center; justify-content:center; }
+  .recov .restdot { font-size:9px; color:var(--rest); text-shadow:0 0 6px rgba(111,143,116,.7); line-height:1; }
+  .recov .nudge { width:6px; height:6px; border-radius:50%; border:1px dashed rgba(111,143,116,.45); opacity:.75; }
+
+  /* ── superposition stage: chat + collapsing paths ── */
+  .stage { display:flex; gap:52px; margin-top:52px; flex-wrap:wrap; align-items:center; justify-content:center; }
+  .chat { width:350px; max-width:100%; display:flex; flex-direction:column; gap:11px; text-align:left; }
+  .bubble { padding:12px 15px; font-size:13.5px; line-height:1.5; max-width:90%; }
+  .bubble.user { align-self:flex-end; background:var(--ink); color:#f1ede2; border-radius:16px 16px 5px 16px; box-shadow:0 12px 30px -16px rgba(20,24,29,.7); }
+  .bubble.bot { align-self:flex-start; background:#fff; border:1px solid var(--line); border-radius:16px 16px 16px 5px; color:var(--text); box-shadow:0 12px 32px -20px rgba(20,24,29,.3); }
+
+  .superpose { width:300px; max-width:100%; display:flex; flex-direction:column; gap:9px; text-align:left; }
+  .traylbl { font-size:9.5px; font-weight:800; letter-spacing:.2em; text-transform:uppercase; color:var(--dim); margin-bottom:1px; }
+  .path { display:flex; align-items:center; gap:8px; border:1px dashed rgba(137,127,163,.8); background:linear-gradient(135deg, rgba(137,127,163,.15), rgba(137,127,163,.03)); color:#6b6580; font-size:13px; font-weight:600; border-radius:11px; padding:11px 14px; animation:superpulse 2.8s ease-in-out infinite; }
+  .path b { font-weight:800; opacity:.6; }
+  .collapse { text-align:center; font-size:10.5px; letter-spacing:.22em; text-transform:uppercase; color:var(--dim); padding:3px 0; }
+  .chosen { display:flex; align-items:center; gap:9px; border-radius:11px; padding:12px 15px; color:#fff; font-size:13.5px; font-weight:700; background:var(--cta); box-shadow:0 0 24px rgba(185,136,63,.45); }
+  .deferred { font-size:11.5px; color:var(--muted); font-style:italic; padding-left:3px; }
+
+  .cta { margin-top:44px; display:inline-flex; align-items:center; gap:9px; background:var(--cta); color:#fff; font-weight:700; font-size:15px; padding:15px 32px; border-radius:999px; text-decoration:none; box-shadow:0 16px 44px -12px rgba(168,116,44,.65); transition:transform .25s ease, box-shadow .25s ease; }
+  .cta:hover { transform:translateY(-2px); box-shadow:0 20px 52px -10px rgba(168,116,44,.75); }
+  .foot { margin-top:32px; font-size:12px; color:#8b8674; }
+  .credit { margin-top:12px; font-size:12px; color:#6a6655; max-width:42ch; line-height:1.6; }
+  .credit em { font-style:italic; color:#8b8674; }
+</style>
+</head>
+<body>
+
+  <!-- ── HERO ── -->
+  <section class="dark" id="top">
+    <div class="wrap">
+      <p class="kicker">Lifetime</p>
+      <h1>Your life,<br/>in weeks.</h1>
+      <p class="sub">Four thousand weeks — that is the whole of an average human life. Most are already spent, the rest unwritten. Stop optimizing the next hour; choose the next few seasons.</p>
+      <div class="weeks" id="weeks" aria-hidden="true"></div>
+      <div class="legend">
+        <span><i style="background:rgba(230,226,214,.24)"></i>lived</span>
+        <span><i style="background:#b9883f"></i>this week</span>
+        <span><i style="background:rgba(230,226,214,.12)"></i>ahead</span>
+      </div>
+    </div>
+    <div class="scrollcue">scroll</div>
+  </section>
+
+  <!-- ── SEASONS (Newport) ── -->
+  <section>
+    <div class="wrap reveal">
+      <p class="kicker"><b>Cal Newport</b> · Slow productivity</p>
+      <h2>Plan in seasons,<br/>not to-do lists.</h2>
+      <p class="sub">Name a handful of seasons that each span weeks or months — a build season, a reset, a sabbatical. Your daily <b>Build</b> days feed the season's goal, and a season only glows once it's fully resourced. Do fewer things, at a more human pace.</p>
+      <div class="appmock" aria-hidden="true">
+        <div class="budgets">
+          <div class="by">Lifetime</div>
+          <div class="yr">Seasons</div>
+          <div class="anchyr">2026</div>
+          <div class="stat">
+            <div class="row"><span class="lbl"><span class="dot" style="background:#58697a"></span>Builder's Summer</span><span class="val">12<small>/12</small> <span class="ok">✓</span></span></div>
+            <div class="bar"><i style="width:100%;background:#58697a"></i></div>
+            <div class="left">Realized — fully resourced</div>
+          </div>
+          <div class="stat">
+            <div class="row"><span class="lbl"><span class="dot" style="background:#897fa3;opacity:.6"></span>Reset &amp; Plan</span><span class="val">4<small>/9</small></span></div>
+            <div class="bar"><i style="width:44%;background:#897fa3"></i></div>
+            <div class="left">5 Build days to place</div>
+          </div>
+          <div class="divline"></div>
+          <div class="stat">
+            <div class="row"><span class="lbl"><span class="dot" style="background:#6f8f74"></span>Rest · recovery</span><span class="val">6</span></div>
+            <div class="left">◎ protected this season — independent of any goal</div>
+          </div>
+        </div>
+        <div class="yearpane">
+          <div class="seasons">
+            <div class="sbar realized" style="grid-column:6 / span 3">◆ Builder's Summer <em>12/12</em></div>
+            <div class="sbar incomplete" style="grid-column:9 / span 2">Reset <em>4/9</em></div>
+          </div>
+          <div class="year" id="year"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── SUPERPOSITION (Burkeman) ── -->
+  <section>
+    <div class="wrap reveal">
+      <p class="kicker"><b>Oliver Burkeman</b> · Four thousand weeks</p>
+      <h2>Hold the maybes<br/>in superposition.</h2>
+      <p class="sub">You can do anything, but not everything. Park competing dreams in the Superpositions tray — unplaced, dashed, patient. When the moment is right, collapse one onto the timeline as a season and let the rest wait, without guilt.</p>
+      <div class="stage">
+        <div class="chat">
+          <div class="bubble user">Two book ideas and a startup are all tugging at me. I can't run all three this year.</div>
+          <div class="bubble bot">Good — you're not meant to. Drop them in Superpositions, no pressure. We'll collapse one onto your 2026 build season and park the rest safely for later.</div>
+        </div>
+        <div class="superpose">
+          <div class="traylbl">Superpositions</div>
+          <div class="path"><b>?</b> Literary novel</div>
+          <div class="path"><b>?</b> Sci-fi novel</div>
+          <div class="path"><b>?</b> Startup concept</div>
+          <div class="collapse">↓ &nbsp;collapse onto the timeline&nbsp; ↓</div>
+          <div class="chosen">✦&nbsp; Startup — your 2026 build season</div>
+          <div class="deferred">Novels stay parked in Superpositions for ’27–’28.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── BUILD & REST ── -->
+  <section>
+    <div class="wrap reveal">
+      <p class="kicker">Deep work &amp; recovery</p>
+      <h2>Protect the build.<br/>Guard the rest.</h2>
+      <p class="sub"><b>Build</b> days are for focused, undistracted work — the kind that compounds and feeds a season. <b>Rest</b> stays its own thing, never tied to a goal. If a stretch of weeks holds no recovery, Lifetime leaves a quiet nudge before you run yourself empty.</p>
+    </div>
+  </section>
+
+  <!-- ── CLOSE ── -->
+  <section class="dark">
+    <div class="wrap">
+      <p class="kicker">Lifetime</p>
+      <h1>Make the<br/>weeks count.</h1>
+      <a class="cta" href="/">Choose your seasons →</a>
+      <p class="foot">A planner for the time you actually have.</p>
+      <p class="credit">In the spirit of Oliver Burkeman's <em>Four Thousand Weeks</em> and Cal Newport's <em>Slow Productivity</em>.</p>
+    </div>
+  </section>
+
+<script>
+  // life in weeks
+  (function () {
+    const el = document.getElementById('weeks');
+    const total = 80 * 52, lived = 1742;
+    const frag = document.createDocumentFragment();
+    for (let i = 0; i < total; i++) {
+      const d = document.createElement('div');
+      d.className = 'wk' + (i < lived ? ' lived' : i === lived ? ' now' : '');
+      frag.appendChild(d);
+    }
+    el.appendChild(frag);
+  })();
+
+  // mini planner year — seasons, Build/Rest, superpositions, recovery nudges
+  (function () {
+    const el = document.getElementById('year');
+    const M = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+    const ROWS = 31, plan = {};
+    const paint = (c, a, b, t) => { for (let r = a; r <= b; r++) plan[c + '-' + r] = t; };
+    paint(2, 9, 14, 'rest');     // a deep-rest spell in spring
+    paint(5, 1, 4, 'build');     // a Build block inside the summer season
+    paint(7, 0, 1, 'away');      // travel / away
+    paint(9, 18, 25, 'rest');    // planned winter rest
+    const gems = { '1-7': 'rest', '5-22': 'build', '7-9': 'build', '11-14': 'rest' };
+    // competing, not-yet-collapsed paths in the upcoming months
+    const supers = new Set(['6-18','8-3','8-11','9-5','9-13','10-7','10-16']);
+
+    // which columns hold any Rest → the rest get a gentle recovery nudge
+    const restCols = new Set();
+    Object.keys(plan).forEach(k => { if (plan[k] === 'rest') restCols.add(+k.split('-')[0]); });
+    Object.keys(gems).forEach(k => { if (gems[k] === 'rest') restCols.add(+k.split('-')[0]); });
+
+    const frag = document.createDocumentFragment();
+    for (let c = 0; c < 12; c++) {
+      const col = document.createElement('div');
+      col.className = 'col';
+      const h = document.createElement('div');
+      h.className = 'mname'; h.textContent = M[c];
+      col.appendChild(h);
+      for (let r = 0; r < ROWS; r++) {
+        const cell = document.createElement('div');
+        const key = c + '-' + r;
+        let cls = 'd';
+        if (gems[key]) cls += ' gem ' + gems[key];
+        else if (supers.has(key)) cls += ' superposition';
+        else if (plan[key]) cls += ' ' + plan[key];
+        else if (r % 7 === 5 || r % 7 === 6) cls += ' wknd';
+        cell.className = cls;
+        if (gems[key]) cell.innerHTML = '<span>' + (gems[key] === 'build' ? '◆' : '◎') + '</span>';
+        col.appendChild(cell);
+      }
+      // recovery row: a Rest gem if this month has any, else a low-contrast nudge
+      const rec = document.createElement('div');
+      rec.className = 'recov';
+      rec.innerHTML = restCols.has(c) ? '<span class="restdot">◎</span>' : '<span class="nudge"></span>';
+      col.appendChild(rec);
+      frag.appendChild(col);
+    }
+    el.appendChild(frag);
+  })();
+
+  // reveal on scroll
+  (function () {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+    }, { threshold: 0.18 });
+    document.querySelectorAll('.reveal').forEach(n => io.observe(n));
+  })();
+</script>
+</body>
+</html>

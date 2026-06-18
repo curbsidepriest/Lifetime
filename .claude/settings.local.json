@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node --env-file=.env server.js)",
+      "Bash(npm run *)",
+      "Bash(curl -sN -X POST http://localhost:3001/api/chat -H 'Content-Type: application/json' -d '{\"messages\":[{\"role\":\"user\",\"content\":\"Say hi in 3 words\"}],\"plannerData\":{}}' --max-time 20)",
+      "Bash(pkill -f \"node.*server.js\")",
+      "Bash(curl -sN -X POST http://localhost:3001/api/chat -H 'Content-Type: application/json' -d '{\"messages\":[{\"role\":\"user\",\"content\":\"can you create a holiday on 1st august pls and im away to paris\"}],\"plannerData\":{\"days\":{},\"budgets\":{\"holiday\":26,\"unpaid\":4,\"wfa\":40,\"wfaMaxConsecutive\":30},\"stats\":{\"byYear\":{}},\"today\":\"2026-06-16\"}}' --max-time 40)"
+    ]
+  }
+}
