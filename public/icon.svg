@@ -1,54 +1,18 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
-  <!-- Background -->
-  <rect width="512" height="512" rx="96" fill="#111827"/>
-
-  <!-- Row 0 -->
-  <rect x="45"  y="103" width="48" height="48" rx="6" fill="#374151"/>
-  <rect x="106" y="103" width="48" height="48" rx="6" fill="#374151"/>
-  <rect x="167" y="103" width="48" height="48" rx="6" fill="#374151"/>
-  <rect x="228" y="103" width="48" height="48" rx="6" fill="#374151"/>
-  <rect x="289" y="103" width="48" height="48" rx="6" fill="#374151"/>
-  <rect x="350" y="103" width="48" height="48" rx="6" fill="#374151"/>
-  <rect x="419" y="103" width="48" height="48" rx="6" fill="#374151"/>
-
-  <!-- Row 1 -->
-  <rect x="45"  y="164" width="48" height="48" rx="6" fill="#374151"/>
-  <rect x="106" y="164" width="48" height="48" rx="6" fill="#374151"/>
-  <rect x="167" y="164" width="48" height="48" rx="6" fill="#374151"/>
-  <rect x="228" y="164" width="48" height="48" rx="6" fill="#374151"/>
-  <rect x="289" y="164" width="48" height="48" rx="6" fill="#374151"/>
-  <rect x="350" y="164" width="48" height="48" rx="6" fill="#374151"/>
-  <rect x="419" y="164" width="48" height="48" rx="6" fill="#374151"/>
-
-  <!-- Row 2 (cells 14–16 filled, cell 17 is blue, cells 18–20 are future) -->
-  <rect x="45"  y="225" width="48" height="48" rx="6" fill="#374151"/>
-  <rect x="106" y="225" width="48" height="48" rx="6" fill="#374151"/>
-  <rect x="167" y="225" width="48" height="48" rx="6" fill="#374151"/>
-  <!-- Cell 17: current -->
-  <rect x="228" y="225" width="48" height="48" rx="6" fill="#3b82f6"/>
-  <!-- Cells 18–20: future -->
-  <rect x="289" y="225" width="48" height="48" rx="6" fill="#1f2937" stroke="#374151" stroke-width="1"/>
-  <rect x="350" y="225" width="48" height="48" rx="6" fill="#1f2937" stroke="#374151" stroke-width="1"/>
-  <rect x="419" y="225" width="48" height="48" rx="6" fill="#1f2937" stroke="#374151" stroke-width="1"/>
-
-  <!-- Row 3 (cells 21–27: future) -->
-  <rect x="45"  y="286" width="48" height="48" rx="6" fill="#1f2937" stroke="#374151" stroke-width="1"/>
-  <rect x="106" y="286" width="48" height="48" rx="6" fill="#1f2937" stroke="#374151" stroke-width="1"/>
-  <rect x="167" y="286" width="48" height="48" rx="6" fill="#1f2937" stroke="#374151" stroke-width="1"/>
-  <rect x="228" y="286" width="48" height="48" rx="6" fill="#1f2937" stroke="#374151" stroke-width="1"/>
-  <rect x="289" y="286" width="48" height="48" rx="6" fill="#1f2937" stroke="#374151" stroke-width="1"/>
-  <rect x="350" y="286" width="48" height="48" rx="6" fill="#1f2937" stroke="#374151" stroke-width="1"/>
-  <rect x="419" y="286" width="48" height="48" rx="6" fill="#1f2937" stroke="#374151" stroke-width="1"/>
-
-  <!-- Row 4 (cells 28–34: future) -->
-  <rect x="45"  y="347" width="48" height="48" rx="6" fill="#1f2937" stroke="#374151" stroke-width="1"/>
-  <rect x="106" y="347" width="48" height="48" rx="6" fill="#1f2937" stroke="#374151" stroke-width="1"/>
-  <rect x="167" y="347" width="48" height="48" rx="6" fill="#1f2937" stroke="#374151" stroke-width="1"/>
-  <rect x="228" y="347" width="48" height="48" rx="6" fill="#1f2937" stroke="#374151" stroke-width="1"/>
-  <rect x="289" y="347" width="48" height="48" rx="6" fill="#1f2937" stroke="#374151" stroke-width="1"/>
-  <rect x="350" y="347" width="48" height="48" rx="6" fill="#1f2937" stroke="#374151" stroke-width="1"/>
-  <rect x="419" y="347" width="48" height="48" rx="6" fill="#1f2937" stroke="#374151" stroke-width="1"/>
-
-  <!-- Subtle midpoint marker -->
-  <rect x="0" y="256" width="512" height="1" fill="white" opacity="0.06"/>
+  <defs>
+    <linearGradient id="lt" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#2563eb"/>
+      <stop offset="0.55" stop-color="#6d28d9"/>
+      <stop offset="1" stop-color="#7c3aed"/>
+    </linearGradient>
+  </defs>
+  <!-- Full-bleed background (safe for "any maskable") -->
+  <rect width="512" height="512" rx="112" fill="url(#lt)"/>
+  <!-- The year ring (the rolling 12-month cycle) -->
+  <circle cx="256" cy="256" r="132" fill="none" stroke="#fff" stroke-width="34" stroke-linecap="round"/>
+  <!-- Focal centre (now / you) -->
+  <circle cx="256" cy="256" r="43" fill="#fff"/>
+  <!-- A marked moment orbiting the year -->
+  <circle cx="349" cy="163" r="40" fill="#fff"/>
+  <circle cx="349" cy="163" r="19" fill="url(#lt)"/>
 </svg>

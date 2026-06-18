@@ -439,11 +439,10 @@ export default function Sidebar({
         <div className="flex items-center gap-2.5">
           <div className="w-6 h-6 rounded-md flex items-center justify-center shrink-0"
             style={{ background: 'linear-gradient(135deg, #2563eb, #7c3aed)' }}>
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <rect x="3" y="3" width="7" height="7" rx="1.5"/>
-              <rect x="14" y="3" width="7" height="7" rx="1.5"/>
-              <rect x="3" y="14" width="7" height="7" rx="1.5"/>
-              <rect x="14" y="14" width="7" height="7" rx="1.5"/>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
+              <circle cx="12" cy="12" r="7.1" stroke="white" strokeWidth="2.1"/>
+              <circle cx="12" cy="12" r="2.4" fill="white"/>
+              <circle cx="17.02" cy="6.98" r="2.2" fill="white"/>
             </svg>
           </div>
           <p style={{ fontSize: 13, fontWeight: 900, color: DARK.bright, letterSpacing: '-0.01em' }}>Lifetime</p>
