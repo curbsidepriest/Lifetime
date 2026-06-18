@@ -189,3 +189,45 @@ export function getBudgetsForYear(budgets, leaveTypes, year) {
   }
   return { budget, consumed };
 }
+
+// ── Backup & restore ──────────────────────────────────────────────────────────
+// Everything the app persists lives in localStorage under keys prefixed "planner"
+// (days, budgets, leave types, canopies, life lenses, relationships, space cfg,
+// mottos, people, birthday, …). Export/import grabs them all by prefix so no key
+// is ever missed, even ones not declared above.
+const BACKUP_PREFIX = 'planner';
+
+function plannerKeys() {
+  const keys = [];
+  for (let i = 0; i < localStorage.length; i++) {
+    const k = localStorage.key(i);
+    if (k && k.startsWith(BACKUP_PREFIX)) keys.push(k);
+  }
+  return keys;
+}
+
+// Returns a serialisable snapshot of all planner data.
+export function exportAllData() {
+  const data = {};
+  for (const k of plannerKeys()) data[k] = localStorage.getItem(k);
+  return { app: 'planner', version: 1, exportedAt: new Date().toISOString(), data };
+}
+
+// Restores a snapshot produced by exportAllData (or a bare { key: value } map).
+// Replaces existing planner data so the result matches the backup exactly.
+// Returns the number of keys written. Throws on an invalid/empty file.
+export function importAllData(payload) {
+  const data = payload && payload.data ? payload.data : payload;
+  if (!data || typeof data !== 'object' || Array.isArray(data)) {
+    throw new Error('Not a valid planner backup file.');
+  }
+  const incoming = Object.keys(data).filter(k => k.startsWith(BACKUP_PREFIX));
+  if (incoming.length === 0) throw new Error('No planner data found in this file.');
+  // Clear existing planner_* keys first so import is a clean replace, not a merge.
+  for (const k of plannerKeys()) localStorage.removeItem(k);
+  for (const k of incoming) {
+    const v = data[k];
+    localStorage.setItem(k, typeof v === 'string' ? v : JSON.stringify(v));
+  }
+  return incoming.length;
+}

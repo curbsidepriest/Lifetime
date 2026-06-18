@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import { useEffect } from 'react';
+import { exportAllData, importAllData } from '../utils/storage';
 
 // Generate a stable, collision-resistant id for a new leave type.
 function newTypeId() { return `type_${Math.random().toString(36).slice(2, 8)}`; }
@@ -92,6 +93,37 @@ export default function SettingsModal({
       ...spaceTargets,
       [kind]: { ...(spaceTargets[kind] || { period: 'week' }), target: n ?? 0 },
     });
+  }
+
+  // ── Backup & restore ─────────────────────────────────────────────────────────
+  function handleExport() {
+    const payload = exportAllData();
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `planner-backup-${new Date().toISOString().slice(0, 10)}.json`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  }
+  function handleImportFile(e) {
+    const file = e.target.files?.[0];
+    e.target.value = ''; // allow re-importing the same file later
+    if (!file) return;
+    if (!window.confirm('Import will REPLACE your current planner data with the contents of this backup. Continue?')) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const n = importAllData(JSON.parse(reader.result));
+        window.alert(`Restored ${n} item${n === 1 ? '' : 's'}. The app will now reload.`);
+        window.location.reload();
+      } catch (err) {
+        window.alert('Import failed: ' + err.message);
+      }
+    };
+    reader.readAsText(file);
   }
 
   return (
@@ -199,6 +231,20 @@ export default function SettingsModal({
                   <span className="text-[10px] text-gray-400">/ week</span>
                 </div>
               ))}
+            </div>
+          </Section>
+
+          {/* ── Backup & restore ────────────────────────────────────────────── */}
+          <Section title="Backup & restore" hint="Your planner is stored only in this browser. Export a backup file to keep it safe; import it to restore, or to move your data to another browser or device.">
+            <div className="flex items-center gap-2">
+              <button onClick={handleExport}
+                className="text-xs bg-gray-800 text-white rounded-lg px-3 py-2 font-semibold hover:bg-gray-700">
+                Export backup
+              </button>
+              <label className="text-xs border border-gray-300 rounded-lg px-3 py-2 font-semibold text-gray-700 hover:bg-gray-50 cursor-pointer">
+                Import backup
+                <input type="file" accept="application/json,.json" className="hidden" onChange={handleImportFile} />
+              </label>
             </div>
           </Section>
 
